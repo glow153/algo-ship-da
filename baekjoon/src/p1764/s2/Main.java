@@ -4,19 +4,19 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    private static int getCurrent(int s, int e){
-        return Math.max(s+(e-s)/2, 0);
-    }
-    private static int binSrch(String[] a, String target, int start, int end, int current){
-        int newStart, newEnd;
-
-        if (target.compareTo(a[current]) > 0) {
-            binSrch(a, target, current + 1, end, getCurrent());
-        } else if (target.compareTo(a[current]) < 0) {
-            binSrch(a, target, start, current - 1, current - (current - 1));
-        } else {
-            return current;
+    private static int binSrch(String[] arr, String target, int len) {
+        int s=0, e=len-1, c;
+        while (s <= e) {
+            c = s + (e - s) / 2;
+            if (target.compareTo(arr[c]) > 0) {
+                s = c + 1;
+            } else if (target.compareTo(arr[c]) < 0) {
+                e = c - 1;
+            } else {
+                return c;
+            }
         }
+        return -1;
     }
 
     public static void main(String[] args) throws IOException {
@@ -25,32 +25,26 @@ public class Main {
         String[] nums = br.readLine().split(" ");
         int n = Integer.parseInt(nums[0]);
         int m = Integer.parseInt(nums[1]);
+        List<String> s = new ArrayList<>();
 
-        String[] a1 = new String[n];
-        String[] a2 = new String[m];
+        String[] arr = new String[n];
+        String[] arr2 = new String[m];
         for(int i=0;i<n;i++) {
-            a1[i] = br.readLine();
+            arr[i] = br.readLine();
         }
         for(int i=0;i<m;i++) {
-            a2[i] = br.readLine();
+            arr2[i] = br.readLine();
         }
 
-        Arrays.sort(a1);
-        Arrays.sort(a2);
+        Arrays.sort(arr);
+        Arrays.sort(arr2);
 
-        List<String> s = new ArrayList<>();
-        int t=0, j=0;
-        for (int i=0;i<a1.length;i++) {
-            for (j=t;j<a2.length;j++){
-                if(a1[i].equals(a2[j])) {
-                    s.add(a2[j]);
-                    t = j+1;
-                    break;
-                }
+        for(int i=0;i<m;i++) {
+            int resultIdx = binSrch(arr, arr2[i], n);
+            if (resultIdx >= 0) {
+                s.add(arr[resultIdx]);
             }
-            if (t==j) break;
         }
-
 
         bw.write(String.valueOf(s.size()));
         bw.newLine();
